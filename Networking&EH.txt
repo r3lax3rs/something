@@ -1,0 +1,182 @@
+																SUBNET: x.0.0.0
+CIDR:		/1				/2				/3				/4				/5				/6				/7				/8
+Hosts:		2,147,483,648	1,073,741,824	536,870,912		268,435,456		134,217,728		67,108,864		33,554,432		16,777,216
+Class A ##################################################################################################################################
+
+																Subnet: 255.x.0.0
+CIDR:		/9				/10				/11				/12				/13				/14				/15				/16
+Hosts:		8,388,608		4,194,304		2,097,152		1,048,576		524,288			262,144			131,072			65,536
+Class B ##################################################################################################################################
+
+																Subnet: 255.255.x.0
+CIDR:		/17				/18				/19				/20				/21				/22				/23				/24
+Hosts:		32,768			16,384			8,192			4,096			2,048			1,024			512				256
+Class C ##################################################################################################################################
+
+																Subnet: 255.255.255.x
+CIDR:		/25				/26				/27				/28				/29				/30				/31				/32
+Hosts:		128				64				32				16				8				4				2				1
+#########################################################################################################################################
+Subnet:		128				192				224				240				248				252				254				255
+
+
+Notes:	*Host double each increment of a CIDR
+		*Always subtract 2 from host total
+		Network ID - First Address (example: 192.168.1.0)
+		Broacast - Last Address	(example: 192.168.1.255)
+		
+		
+					Subnet:				Hosts:		Network:		Broadcast:
+192.168.0.0/22		255.255.252.0		1022		192.168.0.0		192.168.3.255
+192.168.1.0/26		255.255.255.192		62			192.168.1.0		192.168.1.63
+192.168.1.0/27		255.255.255.224		30			192.168.1.0		192.168.1.31
+
+
+######################################## FILES TO LOOK AT:
+## Password related files
+/etc/passwd
+/etc/shadow
+
+## Permission related files
+grep 'sudo' /etc/group -> Will show which users have access to sudo
+sudo -l --> Shows which commands the user may run
+
+## Network information
+ip -a
+ifconfig
+iwconfig -> Wireless
+
+ip n 	--> Shows Neighbours
+arp -a  --> alternative to show neighbours
+
+ip -r 	--> ip route
+route 	--> also works
+
+look out for subnet for seperated networks (more than 256 hosts)
+Look at routing table -> Might need to add the route to it. Add network to routing table.
+
+netstat # look up information for it
+
+## Create file & go into gui editor
+mousepad newfile.txt --> Will create file + open graphic editor
+
+## Fill in ip # Nothing will happen
+sudo service apache2 start
+## Fill in IP again and you will see a webpage (port 80; http)
+
+## To stop this:
+sudo service apache2 stop
+
+## Files in apache2; could be a place to hide malicious files
+/var/www/html/index.html
+
+## How to create http with python
+python3 -m http.server 80 # -m is module
+
+## How to enable service on startup
+sudo systemctl enable ssh
+
+## Disable
+sudo systemctl disable ssh
+
+## Fix new kali VM's
+git clone https://github.com/Dewalt-arch/pimpmykali
+cd pimpmykali
+sudo ./pimpmykali.sh
+N # for new VM's
+Y # to confirm
+
+## negers
+Neger123!
+negerkali
+
+######### Building a ping sweeper with bash
+
+## First some information about the txt we want to build:
+ping 192.168.2.20 -c 1 > ip.txt
+cat ip.txt | grep "64 bytes" #Gives the line
+cat ip.txt | grep "64 bytes" | cut -d " " -f 4 | tr -d ":" # Gives us just the IP adress (from output ping x.x.x.x) WHEN it can ping
+cat ip.txt | grep "64 bytes" | awk '{print $4}' | tr -d ":" # The same but using awk instead of cut
+# cut -d " " -f 4 means cut till 4th empty space ( " " = empty space; -f 4 = 4th time the empty space is happening
+# awk '{print $4}' is easier imo; it basicly means print the 4th variable being the 4th word in the text, which is the ip
+# tr -d means to trim it so when you want to get rid of : you can do tr -d ":"
+
+## Building the pingsweeper:
+#!bin/bash
+
+for ip in `seq 1 254`; do
+ping -c 1 192.168.2.$ip | grep "64 bytes" | awk '{print $4}' | tr -d ":" &
+done
+
+## making it better:
+#!bin/bash
+
+for ip in `seq 1 254`; do
+ping -c 1 $1.$ip | grep "64 bytes" | awk '{print $4}' | tr -d ":" &
+done
+
+## Version 3
+#!bin/bash
+
+if [ "$1" == "" ]
+then
+echo "You forgot an IP address!"
+echo "Syntax: ./ipsweep.sh 192.168.4"
+else
+
+for ip in `seq 1 254`; do
+ping -c 1 $1.$ip | grep "64 bytes" | awk '{print $4}' | tr -d ":" & #NOTE: when using & it will allow multiple instances at ones; when you replace it with ; it will do one per time
+done
+fi
+# To run ./ipsweep.sh 192.168.2
+# You can also save it: ./ipsweep.sh 192.168.2 > ips.txt
+
+## Nmap example:
+nmap -T4 -A -p- # T4 = speed; -A = all; -p- = ports
+
+## How to scan faster with Nmap:
+for ip in $(cat ips.txt); do nmap $ip; done
+
+###### Python
+mkdir Python #create our own directory
+cd Python && touch first.py
+vim first.py
+#!/bin/python3
+print('Hello world!')
+
+## Math
+print(5 + 5) #add
+print(5 - 5) #subtract
+print(5 * 5) #multiply
+print(5 / 5) #divide
+print(5 + 5 - 5 * 5 / 5) #PEMDAS
+print(50 ** 2) #exponent (50*50)
+print(50 %  6) #modulo - takes what is left over
+print(50 / 6) # division with remainder (float)
+print(50 // 6) # division without remainder (round up or down)
+
+##Variables and Methods
+quote = "All is fair in love and war."
+print (quote)
+
+print(quote.upper()) #uppercase
+print(quote.lower()) #lowercase
+print(quote.title()) #titelcase; every first letter of each word is capitalized
+print(len(quote)) # Counts characters
+
+name = "Relaxer" #string
+age = 33 #int
+gpa = 3.7 #float - has a decimal
+
+print(int(age)) #output: 33
+print(int(30.1)) #output: 30
+print(float(30.1)) #output: 30.1
+
+print("My name is " + name + " and I am " + str(age) + " years old.") #concatenate multiple things
+
+age += 1 #will count 1year up
+print(age)
+# Another way of doing this could be:
+birthday = 1
+age += birthday
+print(age)
